@@ -1,0 +1,61 @@
+from fastapi import Depends
+
+from datetime import date
+
+from pymongo.errors import DuplicateKeyError
+
+from api.dto.user_dto import UserDTO
+from api.models.user import User
+
+from typing_extensions import Annotated
+
+async def create_user(name: str, password: str, email: str, birthday: str, genero: str, level: int, exp: int):
+    user = User(
+        name=name,
+        password=password,
+        email=email,
+        birthday=birthday,
+        genero=genero,
+        level=level,
+        exp=exp,
+    )
+    try:
+        await user.insert()
+        return user  # ✅ retorna o documento inserido
+    except DuplicateKeyError:
+        return {
+            "message": "Email já está em uso."
+        }
+
+
+async def get_user(name: str):
+    user = await User.find_one(User.name == name)
+    if not user:
+        return None
+    return user
+
+async def update_user(user_dto: UserDTO):
+    user = await User.find_one(User.id == user_dto.id)
+    if not user:
+        return {"message": "Usuário não encontrado"}
+
+    # atualiza os campos
+    user.password = user_dto.password
+    user.email = user_dto.email
+    user.birthday = user_dto.birthday
+    user.genero = user_dto.genero
+    user.level = user_dto.level
+    user.exp = user_dto.exp
+
+    await user.save()  # salva alterações no banco
+
+    return {"message": "Usuário atualizado com sucesso"}
+
+async def delete_user(user_dto: UserDTO):
+    user = await User.find_one(User.id == user_dto.id)
+    if not user:
+        return
+    
+    await user.delete()
+
+    return {"message": "Usuário deletado com sucesso"}
