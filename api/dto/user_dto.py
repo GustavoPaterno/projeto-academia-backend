@@ -9,7 +9,7 @@ from api.dto.historical_dto import HistoricalDTO
 from api.dto.training_dto import TrainingDTO
 
 class UserDTO(BaseModel):
-    id: UUID = Field(default_factory=uuid4)
+    # id: UUID = Field(default_factory=uuid4)
     name: str
     email: str
     descricao: Optional[str] = None  # Biografia

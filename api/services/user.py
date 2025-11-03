@@ -35,7 +35,7 @@ async def get_user(name: str):
     return user
 
 async def update_user(user_dto: UserDTO):
-    user = await User.find_one(User.id == user_dto.id)
+    user = await User.find_one(User.name == user_dto.name)
     if not user:
         return {"message": "Usuário não encontrado"}
 
@@ -52,7 +52,7 @@ async def update_user(user_dto: UserDTO):
     return {"message": "Usuário atualizado com sucesso"}
 
 async def delete_user(user_dto: UserDTO):
-    user = await User.find_one(User.id == user_dto.id)
+    user = await User.find_one(User.name == user_dto.name)
     if not user:
         return
     
