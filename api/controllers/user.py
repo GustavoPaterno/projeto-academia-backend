@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, Path, status
 from fastapi.exceptions import HTTPException
 from typing_extensions import Annotated
 
@@ -43,9 +43,9 @@ async def get_user(name: str):
 
 
 # ✅ Atualizar usuário
-@router.put("/user", response_model=dict)
-async def update_user(user_dto: UserDTO):
-    result = await user_service.update_user(user_dto)
+@router.post("/user/{user_id}", response_model=dict)
+async def update_user(user_dto: UserDTO, user_id: str = Path(..., description="ID do usuário no Mongo")):
+    result = await user_service.update_user(user_dto, user_id)
     if "message" in result and result["message"] == "Usuário não encontrado":
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=result["message"])
     return result

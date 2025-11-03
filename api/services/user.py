@@ -1,3 +1,4 @@
+from bson import ObjectId
 from fastapi import Depends
 
 from datetime import date
@@ -34,12 +35,18 @@ async def get_user(name: str):
         return None
     return user
 
-async def update_user(user_dto: UserDTO):
-    user = await User.find_one(User.name == user_dto.name)
+async def update_user(user_dto, user_id: str):
+    try:
+        oid = ObjectId(user_id)
+    except Exception:
+        return {"message": "ID inválido"}
+
+    user = await User.find_one(User.id == oid)
     if not user:
         return {"message": "Usuário não encontrado"}
 
     # atualiza os campos
+    user.name = user_dto.name
     user.password = user_dto.password
     user.email = user_dto.email
     user.birthday = user_dto.birthday
@@ -47,9 +54,10 @@ async def update_user(user_dto: UserDTO):
     user.level = user_dto.level
     user.exp = user_dto.exp
 
-    await user.save()  # salva alterações no banco
-
+    # ⚠️ ATENÇÃO: aqui usamos save() em vez de insert()
+    await user.save()
     return {"message": "Usuário atualizado com sucesso"}
+
 
 async def delete_user(user_dto: UserDTO):
     user = await User.find_one(User.name == user_dto.name)
