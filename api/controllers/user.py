@@ -34,9 +34,9 @@ async def create_user(user_dto: UserDTO):
 
 
 # ✅ Buscar usuário por nome
-@router.get("/user/{name}", response_model=UserDTO)
-async def get_user(name: str):
-    user = await user_service.get_user(name)
+@router.get("/user/{user_id}", response_model=UserDTO)
+async def get_user(user_id: str = Path(..., description="ID do usuário no Mongo")):
+    user = await user_service.get_user(user_id)
     if not user:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Usuário não encontrado")
     return user
@@ -52,6 +52,6 @@ async def update_user(user_dto: UserDTO, user_id: str = Path(..., description="I
 
 
 # ✅ Deletar usuário
-@router.delete("/user", response_model=dict)
-async def delete_user(user_dto: Annotated[UserDTO, Depends(token_required)]):
-    return await user_service.delete_user(user_dto)
+@router.delete("/user/{user_id}", response_model=dict)
+async def delete_user(user_id: str = Path(..., description="ID do usuário no Mongo")):
+    return await user_service.delete_user(user_id)

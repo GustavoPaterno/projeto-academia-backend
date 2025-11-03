@@ -29,8 +29,13 @@ async def create_user(name: str, password: str, email: str, birthday: str, gener
         }
 
 
-async def get_user(name: str):
-    user = await User.find_one(User.name == name)
+async def get_user(user_id: str):
+    try:
+        oid = ObjectId(user_id)
+    except Exception:
+        return {"message": "ID inválido"}
+
+    user = await User.find_one(User.id == oid)
     if not user:
         return None
     return user
@@ -59,8 +64,12 @@ async def update_user(user_dto, user_id: str):
     return {"message": "Usuário atualizado com sucesso"}
 
 
-async def delete_user(user_dto: UserDTO):
-    user = await User.find_one(User.name == user_dto.name)
+async def delete_user(user_id: str):
+    try:
+        oid = ObjectId(user_id)
+    except Exception:
+        return {"message": "ID inválido"}
+    user = await User.find_one(User.id == oid)
     if not user:
         return
     
