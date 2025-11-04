@@ -7,4 +7,4 @@ class Token(BaseModel):
 
 # Modelo de dados de token
 class TokenData(BaseModel):
-    name: str | None = None
+    name: str

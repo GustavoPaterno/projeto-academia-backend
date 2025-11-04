@@ -5,6 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from api.database.database import DataBase
 from api.models.user import User
 from api.controllers.user import router as user_router
+from api.controllers.auth import router as auth_router
 
 app = FastAPI()
 app.add_middleware(
@@ -22,3 +23,4 @@ async def startup():
 
 # # Inclui router
 app.include_router(user_router)
+app.include_router(auth_router)

@@ -3,7 +3,7 @@ from fastapi.exceptions import HTTPException
 from typing_extensions import Annotated
 
 from api.dto.user_dto import UserDTO
-from api.middleware.authentication import token_required
+from api.middleware.authentication import get_password_hash, token_required
 from api.services import user as user_service
 
 router = APIRouter()
@@ -19,16 +19,13 @@ async def get_current_user(current_user: Annotated[UserDTO, Depends(token_requir
 async def create_user(user_dto: UserDTO):
     created = await user_service.create_user(
         name=user_dto.name,
-        password=user_dto.password,
+        password=get_password_hash(user_dto.password),
         email=user_dto.email,
         birthday=user_dto.birthday,
         genero=user_dto.genero,
         level=user_dto.level,
         exp=user_dto.exp,
     )
-
-    # if isinstance(created, dict) and "message" in created:
-    #     raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=created["message"])
 
     return created
 

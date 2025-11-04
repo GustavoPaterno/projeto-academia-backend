@@ -9,7 +9,7 @@ from passlib.context import CryptContext
 
 from api.dto.user_dto import UserDTO 
 from api.dto.token_dto import TokenData
-from api.services.user import get_user
+from api.services.user import get_user, get_user_name
 
 from datetime import timedelta, datetime, timezone
 
@@ -43,7 +43,7 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None):
     return encoded_jwt
 
 async def authenticate_user(name: str, password: str):
-    user = await get_user(name)
+    user = await get_user_name(name)
     
     if not user:
         return False
@@ -62,7 +62,7 @@ async def token_required(token: Annotated[str, Depends(oauth2_scheme)]): # get_c
         payload = jwt.decode(
             token,
             Config.SECRET_KEY,
-            algorithms=Config.ALGORITHM
+            algorithms=[Config.ALGORITHM]
         )
         name = payload.get("sub")
         if name is None:

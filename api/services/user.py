@@ -40,6 +40,12 @@ async def get_user(user_id: str):
         return None
     return user
 
+async def get_user_name(user_name: str):
+    user = await User.find_one(User.name == user_name)
+    if not user:
+        return None
+    return user
+
 async def update_user(user_dto, user_id: str):
     try:
         oid = ObjectId(user_id)
