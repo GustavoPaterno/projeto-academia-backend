@@ -14,7 +14,9 @@ router = APIRouter()
 
 @router.post("/user/{user_id}/training", response_model=HistoricalTrainingDTO)
 async def add_training(current_user: Annotated[UserDTO, Depends(token_required)], user_id: str, training_data: HistoricalTraining):
-    
-    
    result = await training_service.add_training_user(user_id, training_data)
    return result
+
+@router.get("/user/{user_id}/training", response_model=HistoricalTrainingDTO)
+async def get_training(current_user: Annotated[UserDTO, Depends(token_required)], user_id: str):
+   return await training_service.get_training_user(user_id)
