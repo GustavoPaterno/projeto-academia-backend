@@ -28,7 +28,15 @@ async def create_user(name: str, password: str, email: str, birthday: str, gener
             "message": "Email já está em uso."
         }
 
-
+async def get_all_user():
+    users = await User.find_all().to_list()
+    return [
+        UserDTO(
+            id=str(user.id),
+            **user.dict(exclude={"id"})
+        )
+        for user in users
+    ]
 async def get_user(user_id: str):
     try:
         oid = ObjectId(user_id)
@@ -41,7 +49,7 @@ async def get_user(user_id: str):
     return user
 
 async def get_user_name(user_name: str):
-    user = await User.find_one(User.name == user_name)
+    user = await User.find_one({"name": user_name})
     if not user:
         return None
     return user

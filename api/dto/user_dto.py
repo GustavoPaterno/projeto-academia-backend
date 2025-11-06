@@ -6,10 +6,11 @@ from uuid import uuid4, UUID
 from pydantic import Field
 
 from api.dto.historical_dto import HistoricalDTO
+from api.dto.historical_training_dto import HistoricalTrainingDTO
 from api.dto.training_dto import TrainingDTO
 
 class UserDTO(BaseModel):
-    # id: UUID = Field(default_factory=uuid4)
+    id: Optional[str]
     name: str
     email: str
     descricao: Optional[str] = None  # Biografia
@@ -19,7 +20,7 @@ class UserDTO(BaseModel):
     level: int
     exp: int
     # photo: Optional[str] = None  # pode guardar caminho/URL
-    training: List[TrainingDTO] = []
+    training: List[HistoricalTrainingDTO] = []
     historical: List[HistoricalDTO] = []
     
 class UserRegisterDto(BaseModel):

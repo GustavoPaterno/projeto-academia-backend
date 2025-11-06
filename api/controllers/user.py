@@ -30,9 +30,16 @@ async def create_user(user_dto: UserDTO):
     return created
 
 
+@router.get("/user", response_model=list[UserDTO])
+async def get_all_user(current_user: Annotated[UserDTO, Depends(token_required)]):
+    user = await user_service.get_all_user()
+    if not user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Nenhum usuário encontrado")
+    return user
+
 # ✅ Buscar usuário por nome
 @router.get("/user/{user_id}", response_model=UserDTO)
-async def get_user(user_id: str = Path(..., description="ID do usuário no Mongo")):
+async def get_user(current_user: Annotated[UserDTO, Depends(token_required)], user_id: str = Path(..., description="ID do usuário no Mongo")):
     user = await user_service.get_user(user_id)
     if not user:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Usuário não encontrado")
@@ -41,7 +48,7 @@ async def get_user(user_id: str = Path(..., description="ID do usuário no Mongo
 
 # ✅ Atualizar usuário
 @router.post("/user/{user_id}", response_model=dict)
-async def update_user(user_dto: UserDTO, user_id: str = Path(..., description="ID do usuário no Mongo")):
+async def update_user(current_user: Annotated[UserDTO, Depends(token_required)], user_dto: UserDTO, user_id: str = Path(..., description="ID do usuário no Mongo")):
     result = await user_service.update_user(user_dto, user_id)
     if "message" in result and result["message"] == "Usuário não encontrado":
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=result["message"])
@@ -50,5 +57,5 @@ async def update_user(user_dto: UserDTO, user_id: str = Path(..., description="I
 
 # ✅ Deletar usuário
 @router.delete("/user/{user_id}", response_model=dict)
-async def delete_user(user_id: str = Path(..., description="ID do usuário no Mongo")):
+async def delete_user(current_user: Annotated[UserDTO, Depends(token_required)], user_id: str = Path(..., description="ID do usuário no Mongo")):
     return await user_service.delete_user(user_id)

@@ -52,7 +52,7 @@ async def authenticate_user(name: str, password: str):
     
     return user
 
-async def token_required(token: Annotated[str, Depends(oauth2_scheme)]): # get_current_user
+async def token_required(token: str = Depends(oauth2_scheme)):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Não foi possível validar credenciais.",
@@ -70,7 +70,7 @@ async def token_required(token: Annotated[str, Depends(oauth2_scheme)]): # get_c
         token_data = TokenData(name=name)
     except InvalidTokenError:
         raise credentials_exception
-    user = await get_user(token_data.name)
+    user = await get_user_name(token_data.name)
     if user is None:
         raise credentials_exception
-    return name
+    return user

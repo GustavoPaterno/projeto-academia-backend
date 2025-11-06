@@ -4,7 +4,6 @@ from typing import Optional
 
 
 class Training(Document):
-    id: int
     nome: str
     type: str
     series: int

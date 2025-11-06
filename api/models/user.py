@@ -7,6 +7,7 @@ from typing import Optional, Annotated
 from pydantic import Field
 
 from api.models.historical import Historical
+from api.models.historical_training import HistoricalTraining
 from api.models.training import Training
 
 class User(Document):
@@ -19,5 +20,5 @@ class User(Document):
     level: int
     exp: int
     # photo: Optional[str] = None  
-    training: List[Training] = []
-    historical: List[Historical] = []
+    training: List[HistoricalTraining] = Field(default_factory=list)
+    historical: List[Historical] = Field(default_factory=list)
