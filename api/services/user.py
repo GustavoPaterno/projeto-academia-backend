@@ -3,6 +3,7 @@ from fastapi import Depends
 
 from datetime import date
 
+from fastapi.encoders import jsonable_encoder
 from pymongo.errors import DuplicateKeyError
 
 from api.dto.user_dto import UserDTO
@@ -32,11 +33,12 @@ async def get_all_user():
     users = await User.find_all().to_list()
     return [
         UserDTO(
-            id=str(user.id),
+            _id=str(user.id),
             **user.dict(exclude={"id"})
         )
         for user in users
     ]
+
 async def get_user(user_id: str):
     try:
         oid = ObjectId(user_id)
@@ -46,7 +48,8 @@ async def get_user(user_id: str):
     user = await User.find_one(User.id == oid)
     if not user:
         return None
-    return user
+    
+    return jsonable_encoder(user)
 
 async def get_user_name(user_name: str):
     user = await User.find_one({"name": user_name})
@@ -54,7 +57,7 @@ async def get_user_name(user_name: str):
         return None
     return user
 
-async def update_user(user_dto, user_id: str):
+async def update_user(user_dto: UserDTO, user_id: str):
     try:
         oid = ObjectId(user_id)
     except Exception:

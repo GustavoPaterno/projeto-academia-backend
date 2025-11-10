@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, Path, status
 from fastapi.exceptions import HTTPException
 from typing_extensions import Annotated
 
-from api.dto.user_dto import UserDTO
+from api.dto.user_dto import UserDTO, UserRegisterDto
 from api.middleware.authentication import get_password_hash, token_required
 from api.services import user as user_service
 
@@ -16,7 +16,7 @@ async def get_current_user(current_user: Annotated[UserDTO, Depends(token_requir
 
 
 @router.post("/user", status_code=status.HTTP_201_CREATED)
-async def create_user(user_dto: UserDTO):
+async def create_user(user_dto: UserRegisterDto):
     created = await user_service.create_user(
         name=user_dto.name,
         password=get_password_hash(user_dto.password),
@@ -37,7 +37,7 @@ async def get_all_user(current_user: Annotated[UserDTO, Depends(token_required)]
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Nenhum usuário encontrado")
     return user
 
-# ✅ Buscar usuário por nome
+# ✅ Buscar usuário por id
 @router.get("/user/{user_id}", response_model=UserDTO)
 async def get_user(current_user: Annotated[UserDTO, Depends(token_required)], user_id: str = Path(..., description="ID do usuário no Mongo")):
     user = await user_service.get_user(user_id)

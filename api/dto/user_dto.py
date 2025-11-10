@@ -10,7 +10,22 @@ from api.dto.historical_training_dto import HistoricalTrainingDTO
 from api.dto.training_dto import TrainingDTO
 
 class UserDTO(BaseModel):
-    id: Optional[str]
+    id: Optional[str] = Field(default=None, alias="_id")
+    name: str
+    email: str
+    descricao: Optional[str] = None  # Biografia
+    birthday: str
+    password: str
+    genero: str
+    level: int
+    exp: int
+    training: List[HistoricalTrainingDTO] = []
+    historical: List[HistoricalDTO] = []
+
+    class Config:
+        allow_population_by_field_name = True
+    
+class UserRegisterDto(BaseModel):
     name: str
     email: str
     descricao: Optional[str] = None  # Biografia
@@ -22,10 +37,5 @@ class UserDTO(BaseModel):
     # photo: Optional[str] = None  # pode guardar caminho/URL
     training: List[HistoricalTrainingDTO] = []
     historical: List[HistoricalDTO] = []
+
     
-class UserRegisterDto(BaseModel):
-    username: str
-    password: str
-    email: str
-    birthday: str
-    genero: str

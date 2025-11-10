@@ -24,9 +24,7 @@ async def startup():
     database = DataBase()
     database.MODELS = [
             User,
-            # HistoricalTraining,
-            Historical,
-            Training
+            Training,
         ]
     await database.init()
 
