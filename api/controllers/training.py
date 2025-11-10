@@ -39,19 +39,15 @@ async def add_exercise(user_id: str, training_id: str, exercise: TrainingExercis
     return await training_service.add_exercises_user(user_id, training_id, exercise)
 
 
-@router.get(
-    "/user/{user_id}/training/{training_id}/exercises/{exercise_id}",
-    response_model=TrainingExercisesDTO
-)
-async def get_exercise(user_id: str, training_id: str, exercise_id: str):
+@router.get("/training/{training_id}/exercises/{exercise_id}", response_model=TrainingExercisesDTO)
+async def get_exercise(training_id: str, exercise_id: str):
     return await training_service.get_exercise_user(training_id, exercise_id)
 
 
-# @router.post("/user/{training_id}/training/update", response_model=TrainingExercisesDTO)
-# async def alter_exercises(current_user: Annotated[UserDTO, Depends(token_required)], training_id: str, training_data: TrainingExercises):
-#    result = await training_service.alter_exercises_user(training_id, training_data)
-#    return result
+@router.post("/training/{training_id}/exercises/{exercise_id}", response_model=TrainingExercisesDTO)
+async def alter_exercise(exercise_id: str, training_id: str, exercise: TrainingExercises):
+    return await training_service.alter_exercises_user(exercise_id, training_id, exercise)
 
-# @router.delete("/user/{training_id}/training", response_model=TrainingExercisesDTO)
-# async def delete_exercises(training_id: str):
-#    return await training_service.delete_exercises_user(training_id)
+@router.delete("/training/{training_id}/exercises/{exercise_id}", response_model=dict)
+async def delete_exercises(exercise_id: str, training_id: str):
+   return await training_service.delete_exercises_user(exercise_id, training_id)

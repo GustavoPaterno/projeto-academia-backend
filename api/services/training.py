@@ -123,40 +123,44 @@ async def get_exercise_user(training_id: str, exercise_id: str):
     return TrainingExercisesDTO(**exercicio.dict())
 
 
-# async def alter_exercises_user(user_id: str, training_data: TrainingExercises):
-#     user = await User.find_one({"training.id": user_id})
-#     if not user:
-#         raise HTTPException(status_code=404, detail="Usuário não encontrado")
+async def alter_exercises_user(exercise_id: str, training_id: str, exercise_data: TrainingExercises):
 
-#     treino = next((t for t in user.training if t.id == user_id), None)
-#     if not treino:
-#         raise HTTPException(status_code=404, detail="Treino não encontrado")
+    user = await User.find_one({"training.id": training_id})
+    if not user:
+        raise HTTPException(status_code=404, detail="Treino não encontrado")
 
-#     treino.name = training_data.name
-#     treino.series = training_data.series
-#     treino.type = training_data.type
-#     treino.repetitions = training_data.repetitions
+    treino = next((t for t in user.training if t.id == training_id), None)
+    if not treino:
+        raise HTTPException(status_code=404, detail="Treino não encontrado")
 
-#     await user.save()
+    exercicio = next((e for e in treino.exercises if e.id == exercise_id), None)
+    if not exercicio:
+        raise HTTPException(status_code=404, detail="Exercício não encontrado")
 
-#     return TrainingExercisesDTO(**treino.dict())
+    exercicio.name = exercise_data.name
+    exercicio.series = exercise_data.series
+    exercicio.type = exercise_data.type
+    exercicio.repetitions = exercise_data.repetitions
 
-# async def delete_exercises_user(training_id: str):
-#     # 1️⃣ Achar o usuário que contém o treino
-#     user = await User.find_one({"training.id": training_id})
-#     if not user:
-#         raise HTTPException(status_code=404, detail="Treino não encontrado")
+    await user.save()
 
-#     # 2️⃣ Filtrar o treino fora da lista
-#     original_count = len(user.training)
-#     user.training = [t for t in user.training if t.id != training_id]
+    return TrainingExercisesDTO(**exercicio.dict())
 
-#     # 3️⃣ Se nada foi removido, treino não existia
-#     if len(user.training) == original_count:
-#         raise HTTPException(status_code=404, detail="Treino não encontrado")
 
-#     # 4️⃣ Salvar o usuário com a lista atualizada
-#     await user.save()
+async def delete_exercises_user(exercise_id: str ,training_id: str):
 
-#     # 5️⃣ Retornar mensagem de sucesso
-#     return {"message": "Treino removido com sucesso"}
+    user = await User.find_one({"training.id": training_id})
+    if not user:
+        raise HTTPException(status_code=404, detail="user não encontrado")
+    
+    treino = next((t for t in user.training if t.id == training_id), None)
+    if not treino:
+        raise HTTPException(status_code=404, detail="Treino não encontrado")
+    
+    exercicio = next((e for e in treino.exercises if e.id == exercise_id), None)
+    if not exercicio:
+        raise HTTPException(status_code=404, detail="Exercício não encontrado")
+    
+    treino.exercises = [t for t in treino.exercises if t.id != exercise_id]
+    await user.save()
+    return {"message": "treino deletado"}
