@@ -34,10 +34,10 @@ async def delete_training(training_id: str):
 
 #################################################################################
 
-# @router.post("/user/{training_id}/training", response_model=TrainingExercisesDTO)
-# async def add_exercises(current_user: Annotated[UserDTO, Depends(token_required)], training_id: str, training_data: TrainingExercises):
-#    result = await training_service.add_exercises_user(training_id, training_data)
-#    return result
+@router.post("/user/{user_id}/training/{training_id}/exercise", response_model=TrainingExercisesDTO)
+async def add_exercise(user_id: str, training_id: str, exercise: TrainingExercises):
+    return await training_service.add_exercises_user(user_id, training_id, exercise)
+
 
 # @router.get("/user/{training_id}/training", response_model=TrainingExercisesDTO)
 # async def get_exercises(current_user: Annotated[UserDTO, Depends(token_required)], training_id: str):

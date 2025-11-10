@@ -75,24 +75,33 @@ async def delete_training_user(training_id: str):
 
 ###########################################
 
-# async def add_exercises_user(user_id: str, training_data: TrainingExercises):
-#     try:
-#         oid = ObjectId(user_id)
-#     except Exception:
-#         return {"message": "ID inválido"}
+async def add_exercises_user(user_id: str, training_id: str, exercises_data: TrainingExercises):
+    try:
+        oid = ObjectId(user_id)
+    except Exception:
+        raise HTTPException(status_code=400, detail="ID de usuário inválido")
     
-#     user = await User.find_one(User.id == oid)
-#     if not user:
-#         raise HTTPException(status_code=404, detail="Usuário não encontrado")
+    user = await User.find_one(User.id == oid)
+    if not user:
+        raise HTTPException(status_code=404, detail="Usuário não encontrado")
 
-#     # Forçar geração se o id estiver ausente
-#     if not training_data.id:
-#         training_data.id = str(uuid4())
+    # Encontra o treino dentro da lista de treinos do usuário
+    treino = next((t for t in user.training if t.id == training_id), None)
+    if not treino:
+        raise HTTPException(status_code=404, detail="Treino não encontrado")
 
-#     user.training.append(training_data)
-#     await user.save()
+    # Gera id se não tiver
+    if not exercises_data.id:
+        exercises_data.id = str(uuid4())
 
-#     return HistoricalTrainingDTO(**training_data.dict())
+    # Adiciona o exercício ao treino
+    treino.exercises.append(exercises_data)
+
+    # Salva o usuário com a lista de treinos atualizada
+    await user.save()
+
+    # Retorna o exercício adicionado como DTO
+    return TrainingExercisesDTO(**exercises_data.dict())
 
 # async def get_exercises_user(training_id: str):
 #     # Busca o usuário que contém esse treino
