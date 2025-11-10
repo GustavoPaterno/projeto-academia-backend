@@ -39,9 +39,13 @@ async def add_exercise(user_id: str, training_id: str, exercise: TrainingExercis
     return await training_service.add_exercises_user(user_id, training_id, exercise)
 
 
-# @router.get("/user/{training_id}/training", response_model=TrainingExercisesDTO)
-# async def get_exercises(current_user: Annotated[UserDTO, Depends(token_required)], training_id: str):
-#    return await training_service.get_exercises_user(training_id)
+@router.get(
+    "/user/{user_id}/training/{training_id}/exercises/{exercise_id}",
+    response_model=TrainingExercisesDTO
+)
+async def get_exercise(user_id: str, training_id: str, exercise_id: str):
+    return await training_service.get_exercise_user(training_id, exercise_id)
+
 
 # @router.post("/user/{training_id}/training/update", response_model=TrainingExercisesDTO)
 # async def alter_exercises(current_user: Annotated[UserDTO, Depends(token_required)], training_id: str, training_data: TrainingExercises):

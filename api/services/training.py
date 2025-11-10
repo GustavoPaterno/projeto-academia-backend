@@ -103,18 +103,25 @@ async def add_exercises_user(user_id: str, training_id: str, exercises_data: Tra
     # Retorna o exercício adicionado como DTO
     return TrainingExercisesDTO(**exercises_data.dict())
 
-# async def get_exercises_user(training_id: str):
-#     # Busca o usuário que contém esse treino
-#     user = await User.find_one({"training.id": training_id})
-#     if not user:
-#         raise HTTPException(status_code=404, detail="Treino não encontrado")
+async def get_exercise_user(training_id: str, exercise_id: str):
 
-#     # Busca o treino dentro do array do usuário
-#     treino = next((t for t in user.training if t.id == training_id), None)
-#     if not treino:
-#         raise HTTPException(status_code=404, detail="Treino não encontrado")
+    user = await User.find_one({"training.id": training_id})
+    if not user:
+        raise HTTPException(status_code=404, detail="Treino não encontrado")
 
-#     return HistoricalTrainingDTO(**treino.dict())
+    # 2️⃣ Busca o treino dentro do usuário
+    treino = next((t for t in user.training if t.id == training_id), None)
+    if not treino:
+        raise HTTPException(status_code=404, detail="Treino não encontrado")
+
+    # 3️⃣ Busca o exercício dentro do treino
+    exercicio = next((e for e in treino.exercises if e.id == exercise_id), None)
+    if not exercicio:
+        raise HTTPException(status_code=404, detail="Exercício não encontrado")
+
+    # 4️⃣ Retorna o DTO do exercício encontrado
+    return TrainingExercisesDTO(**exercicio.dict())
+
 
 # async def alter_exercises_user(user_id: str, training_data: TrainingExercises):
 #     user = await User.find_one({"training.id": user_id})
