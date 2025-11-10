@@ -33,7 +33,7 @@ async def get_all_user():
     users = await User.find_all().to_list()
     return [
         UserDTO(
-            _id=str(user.id),
+            id=str(user.id),
             **user.dict(exclude={"id"})
         )
         for user in users

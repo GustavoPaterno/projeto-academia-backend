@@ -57,25 +57,21 @@ async def alter_training_user(user_id: str, training_data: HistoricalTraining):
 
     return HistoricalTrainingDTO(**treino.dict())
 
+
 async def delete_training_user(training_id: str):
-    # 1️⃣ Achar o usuário que contém o treino
+
     user = await User.find_one({"training.id": training_id})
     if not user:
+        raise HTTPException(status_code=404, detail="user não encontrado")
+    
+    treino = next((t for t in user.training if t.id == training_id), None)
+    if not treino:
         raise HTTPException(status_code=404, detail="Treino não encontrado")
-
-    # 2️⃣ Filtrar o treino fora da lista
-    original_count = len(user.training)
+    
     user.training = [t for t in user.training if t.id != training_id]
-
-    # 3️⃣ Se nada foi removido, treino não existia
-    if len(user.training) == original_count:
-        raise HTTPException(status_code=404, detail="Treino não encontrado")
-
-    # 4️⃣ Salvar o usuário com a lista atualizada
     await user.save()
+    return {"message": "treino deletado"}
 
-    # 5️⃣ Retornar mensagem de sucesso
-    return {"message": "Treino removido com sucesso"}
 
 ###########################################
 

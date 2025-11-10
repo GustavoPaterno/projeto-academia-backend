@@ -10,7 +10,8 @@ from api.dto.historical_training_dto import HistoricalTrainingDTO
 from api.dto.training_dto import TrainingDTO
 
 class UserDTO(BaseModel):
-    id: Optional[str] = Field(default=None, alias="_id")
+    # id: Optional[str] = Field(default=None, alias="_id")
+    id: str = Field(default_factory=lambda: str(uuid4()))
     name: str
     email: str
     descricao: Optional[str] = None  # Biografia

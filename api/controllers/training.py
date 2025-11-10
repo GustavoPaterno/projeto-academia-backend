@@ -28,9 +28,9 @@ async def alter_training(current_user: Annotated[UserDTO, Depends(token_required
    result = await training_service.alter_training_user(user_id, training_data)
    return result
 
-@router.delete("/user/{user_id}/training", response_model=HistoricalTrainingDTO)
-async def delete_training(user_id: str):
-   return await training_service.delete_training_user(user_id)
+@router.delete("/user/{training_id}/training", response_model=dict)
+async def delete_training(training_id: str):
+   return await training_service.delete_training_user(training_id)
 
 #################################################################################
 
