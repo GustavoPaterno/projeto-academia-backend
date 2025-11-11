@@ -13,4 +13,3 @@ class HistoricalDTO(BaseModel):
     type: str
     dia: str
     exercises: List[TrainingExercisesDTO] = Field(default_factory=list)
-    

@@ -61,7 +61,7 @@ async def alter_historical_user(user_id: str, historical_data: Historical):
 
 async def delete_historical_user(historico_id: str):
 
-    user = await User.find_one({"historico.id": historico_id})
+    user = await User.find_one({"historical.id": historico_id})
     if not user:
         raise HTTPException(status_code=404, detail="user não encontrado")
     
