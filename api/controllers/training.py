@@ -34,7 +34,7 @@ async def delete_training(training_id: str):
 
 #################################################################################
 
-@router.post("/user/{user_id}/training/{training_id}/exercise", response_model=TrainingExercisesDTO)
+@router.post("/user/{user_id}/training/{training_id}/exercises", response_model=TrainingExercisesDTO)
 async def add_exercise(user_id: str, training_id: str, exercise: TrainingExercises):
     return await training_service.add_exercises_user(user_id, training_id, exercise)
 

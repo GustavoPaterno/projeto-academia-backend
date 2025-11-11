@@ -36,18 +36,18 @@ async def delete_training(training_id: str):
 
 #################################################################################
 
-@router.post("/user/{user_id}/historical/{training_id}/exercise", response_model=TrainingExercisesDTO)
+@router.post("/user/{user_id}/historical/{training_id}/exercises", response_model=TrainingExercisesDTO)
 async def add_exercise(user_id: str, training_id: str, exercise: TrainingExercises):
     return await historical_service.add_exercises_historical(user_id, training_id, exercise)
 
-@router.get("/training/{training_id}/historical/{exercise_id}", response_model=TrainingExercisesDTO)
+@router.get("/historical/{training_id}/exercises/{exercise_id}", response_model=TrainingExercisesDTO)
 async def get_exercise_historical(training_id: str, exercise_id: str):
     return await historical_service.get_exercises_historical(training_id, exercise_id)
 
-@router.post("/training/{training_id}/historical/{exercise_id}", response_model=TrainingExercisesDTO)
+@router.post("/historical/{training_id}/exercises/{exercise_id}", response_model=TrainingExercisesDTO)
 async def alter_exercise_historical(exercise_id: str, training_id: str, exercise: TrainingExercises):
     return await historical_service.alter_exercises_historical(exercise_id, training_id, exercise)
 
-@router.delete("/training/{training_id}/historical/{exercise_id}", response_model=dict)
+@router.delete("/historical/{training_id}/exercises/{exercise_id}", response_model=dict)
 async def delete_exercises_historical(exercise_id: str, training_id: str):
    return await historical_service.delete_exercises_historical(exercise_id, training_id)
