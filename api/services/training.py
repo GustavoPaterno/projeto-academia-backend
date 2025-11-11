@@ -103,7 +103,7 @@ async def add_exercises_user(user_id: str, training_id: str, exercises_data: Tra
     # Retorna o exercício adicionado como DTO
     return TrainingExercisesDTO(**exercises_data.dict())
 
-async def get_exercise_user(training_id: str, exercise_id: str):
+async def get_exercises_user(training_id: str, exercise_id: str):
 
     user = await User.find_one({"training.id": training_id})
     if not user:

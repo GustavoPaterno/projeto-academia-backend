@@ -41,7 +41,7 @@ async def add_exercise(user_id: str, training_id: str, exercise: TrainingExercis
 
 @router.get("/training/{training_id}/exercises/{exercise_id}", response_model=TrainingExercisesDTO)
 async def get_exercise(training_id: str, exercise_id: str):
-    return await training_service.get_exercise_user(training_id, exercise_id)
+    return await training_service.get_exercises_user(training_id, exercise_id)
 
 
 @router.post("/training/{training_id}/exercises/{exercise_id}", response_model=TrainingExercisesDTO)

@@ -10,6 +10,7 @@ from api.models.user import User
 from api.controllers.user import router as user_router
 from api.controllers.auth import router as auth_router
 from api.controllers.training import router as training_router
+from api.controllers.historical import router as historical_router
 
 app = FastAPI()
 app.add_middleware(
@@ -32,3 +33,5 @@ async def startup():
 app.include_router(user_router)
 app.include_router(auth_router)
 app.include_router(training_router)
+app.include_router(historical_router)
+
